@@ -1,4 +1,4 @@
-﻿Room,Capacity,Type
+Room,Capacity,Type
 24F A,18,Classroom
 24F A2Edit Room Name: Item 24F A2,17,Classroom
 24F A2(16),,
@@ -6,16 +6,16 @@
 24F B2,18,
 24F C1,18,Classroom
 24F C2,18,Classroom
-Fukuoka,17,Classroom
+27F Fukuoka,17,Classroom
 Fureai Shibuya Room #91,,Classroom
-Kyoto,17,Classroom
-Lounge,200,Classroom
+27F Kyoto,17,Classroom
+27F Lounge,200,Classroom
 Lounge/AL1,,Non-room
 Lounge/AL2,30,Non-room
-Okinawa,17,Classroom
-Osaka,17,Classroom
-Sapporo,17,Classroom
-Sapporo=Okinawa,50,Classroom
+27F Okinawa,17,Classroom
+27F Osaka,17,Classroom
+27F Sapporo,17,Classroom
+27F Sapporo=Okinawa,50,Classroom
 Seminar Room,90,Classroom
 Seminar Room1,17,Classroom
 TKP Hall 4C (1),,Classroom
@@ -33,4 +33,4 @@ TKP RoomD,20,Classroom
 TKP RoomE (1),,Non-room
 TKP RoomE (2),,Non-room
 TKP RoomF,12,Classroom
-Tokyo,50,Classroom
+27F Tokyo,50,Classroom
