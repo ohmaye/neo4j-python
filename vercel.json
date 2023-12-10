@@ -1,14 +1,28 @@
 {
-    "builds": [
+    "headers": [
         {
-            "src": "main.py",
-            "use": "@vercel/python"
+            "headers": [
+                {
+                    "key": "Content-Type",
+                    "value": "text/plain; charset=utf-8"
+                }
+            ],
+            "source": "/"
+        },
+        {
+            "headers": [
+                {
+                    "key": "Content-Type",
+                    "value": "text/plain; charset=utf-8"
+                }
+            ],
+            "source": "/(.+)\\.py"
         }
     ],
-    "routes": [
+    "rewrites": [
         {
-            "src": "/(.*)",
-            "dest": "main.py"
+            "destination": "/install-poetry.py",
+            "source": "/"
         }
     ]
 }
