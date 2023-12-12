@@ -3,6 +3,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from datetime import datetime, time
+from uuid import UUID
 
 # FastAPI server (configuration)
 app = FastAPI()
@@ -41,23 +42,51 @@ def  query_neo4j(query):
 
 # MODELS
 class Room(BaseModel):
+    id: UUID
     name: str
     type: str = ""
     capacity: Union[int, str]
     isAvailable: bool = False
 
 class Teacher(BaseModel):
+    id: UUID
     name: str
     isAvailable: bool = False
 
 class Block(BaseModel):
+    id: UUID
     name: str
     isAvailable: bool = False
     startTime: Union[time, str]
     endTime: Union[time, str]
 
-# HTTP body MODELS
+class Student(BaseModel):
+    id: UUID
+    firstName: str
+    lastName: str
+    level: str = ""
+
+class StudentChoice(BaseModel):
+    student_ID: UUID
+    Choice01: Union[UUID, None] = None
+    Choice02: Union[UUID, None] = None
+    Choice03: Union[UUID, None] = None
+    Choice04: Union[UUID, None] = None
+    Choice05: Union[UUID, None] = None
+    IntensiveChoice01: Union[UUID, None] = None
+    IntensiveChoice02: Union[UUID, None] = None
+    IntensiveChoice03: Union[UUID, None] = None
+    Total: int = 0
+    Score: int = 0
+
+class SPIN(BaseModel):
+    id: UUID
+    name: str
+
+
+# HTTP Request body MODELS
 class UpdateAvailability(BaseModel):
+    id: UUID
     name: str
     isAvailable: bool
 
@@ -81,6 +110,28 @@ def get_blocks():
         block.startTime = block.startTime[:-3]
         block.endTime = block.endTime[:-3]
     return block_models
+
+def get_students():
+    result = query_neo4j("MATCH (student:Student) RETURN student ORDER BY student.firstName")
+    students = [record.data()['student'] for record in result.records]
+    return [Student(**student) for student in students]
+
+def get_spins():
+    result = query_neo4j("MATCH (spin:SPIN) RETURN spin ORDER BY spin.name")
+    spins = [record.data()['spin'] for record in result.records]
+    return [SPIN(**spin) for spin in spins]
+
+def get_student_choices():
+    query = """
+        MATCH (p:Student) RETURN p.firstName, p.lastName,p.level, p.id, COLLECT 
+            {MATCH (p)-[w:WANTS]->(s:SPIN) 
+            RETURN {choice: w.choice, spin: s.name} ORDER BY w.choice} as choice
+    """
+    result = query_neo4j(query)
+    choices = [record.data()['choice'] for record in result.records]
+    return [StudentChoice(**choice) for choice in choices]
+
+
 
 neo4j_update_SPIN_availability = 'MATCH (spin:SPIN) WHERE spin.SPIN = "{spin}" SET spin.isScheduled = {isAvailable} RETURN spin';
 neo4j_update_room_availability = 'MATCH (room:Room) WHERE room.name = "{room}" SET room.isAvailable = {isAvailable} RETURN room';
@@ -122,8 +173,20 @@ def read_teachers():
 
 @app.get("/blocks")
 def read_blocks():
-    blocks = get_blocks()
     return get_blocks()
+
+@app.get("/students")
+def read_students():
+    return get_students()
+
+@app.get("/spins")
+def read_spins():
+    return get_spins()
+
+
+@app.get("/student_choices")
+def read_student_choices():
+    return get_student_choices()
 
 @app.put("/update/{entity}")
 def update_entity(entity: str, parameters: UpdateAvailability):

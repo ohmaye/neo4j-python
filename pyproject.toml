@@ -13,6 +13,7 @@ ortools = "^9.8.3296"
 pydantic = "^2.5.2"
 fastapi = "^0.104.1"
 uvicorn = {extras = ["standard"], version = "^0.24.0.post1"}
+uuid = "^1.30"
 
 
 [tool.poetry.group.dev.dependencies]
