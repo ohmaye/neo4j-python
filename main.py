@@ -65,6 +65,7 @@ class Student(BaseModel):
     firstName: str
     lastName: str
     level: str = ""
+    isAvailable: bool = True
 
 class StudentChoice(BaseModel):
     student_ID: UUID
@@ -80,6 +81,7 @@ class StudentChoice(BaseModel):
     IntensiveChoice03: Union[UUID, None] = None
     Total: int = 0
     Score: int = 0
+    isAvailable: bool = True
 
 class SPIN(BaseModel):
     id: UUID
@@ -128,7 +130,8 @@ def get_student_choices():
         MATCH (st:Student)-[w:WANTS]->(sp:SPIN)
         WITH st, COLLECT({choice: w.choice, spin: sp.name}) as choices 
         RETURN st.id as student_ID, st.firstName as firstName, st.lastName as lastName, 
-        choices as choices ORDER BY st.name
+        st.level as level, st.isAvailable as isAvailable,
+        choices as choices ORDER BY st.firstName, st.lastName
     """
     result = query_neo4j(query)
 
@@ -138,13 +141,15 @@ def get_student_choices():
         student_id = record["student_ID"]
         first_name = record["firstName"]
         last_name = record["lastName"]
+        level = record["level"]
+        isAvailable = record["isAvailable"]
         choices = record["choices"]
 
         # Create a dictionary to represent each row in the table
-        row = {"studentID": student_id, "firstName": first_name, "lastName": last_name}
+        row = {"studentID": student_id, "firstName": first_name, "lastName": last_name, "level":level, "isAvailable":isAvailable}
         for choice in choices:
             choice_number = choice["choice"]
-            course_name = choice["spin"]
+            course_name = choice["spin"] 
             row[f"{choice_number}"] = course_name
 
         table_data.append(row)
