@@ -142,7 +142,7 @@ class ChatRequest(BaseModel):
 CHAT_PROMPT_TEMPLATE = ChatPromptTemplate.from_messages(
     [
         SystemMessagePromptTemplate.from_template(
-            "You're a AI that knows everything about cats."
+            "You're a AI that knows everything about http://www.ef.com"
         ),
         MessagesPlaceholder(variable_name="history"),
         HumanMessagePromptTemplate.from_template("{input}"),
@@ -193,4 +193,4 @@ async def generate_response(data: ChatRequest) -> StreamingResponse:
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run(app)
+    uvicorn.run(app, port=8001)
