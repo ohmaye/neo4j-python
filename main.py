@@ -13,6 +13,7 @@ origins = [
     "http://localhost",
     "https://localhost",
     "http://localhost:5173",
+    "http://localhost:5174",
     # Add more allowed origins as needed
 ]
 
